@@ -22,9 +22,11 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public BeerDTO findById(UUID id) {
-        return beerRepository.findById(id)
+        BeerDTO found =  beerRepository.findById(id)
                 .map(beerMapper::beerToBeerDTO)
                 .orElseThrow(ResourceNotFoundException::new);
+
+        return found;
     }
 
     @Override

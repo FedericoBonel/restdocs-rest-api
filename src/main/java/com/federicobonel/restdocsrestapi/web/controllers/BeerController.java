@@ -23,13 +23,13 @@ public class BeerController {
 
     @GetMapping("/{beerId}")
     @ResponseStatus(HttpStatus.OK)
-    public BeerDTO getById(@PathVariable UUID beerId) {
+    public BeerDTO getById(@PathVariable("beerId") UUID beerId) {
         log.info("Getting beer by id: " + beerId.toString());
 
         return beerService.findById(beerId);
     }
 
-    @PutMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BeerDTO createBeer(@RequestBody @Validated BeerDTO beerDTO) {
         log.info("Creating beer");
