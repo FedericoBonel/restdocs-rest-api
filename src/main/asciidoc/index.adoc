@@ -1,0 +1,27 @@
+= Spring Framework Brewery Order Service Docs
+Federico Bonel;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+Sample application demonstrating how to use Spring REST Docs with JUnit 5.
+
+`BeerOrderControllerTest` calls to a simple service and produces three documentation snippets.
+
+One showing how to make an HTTP request to the service using cURL:
+
+include::{snippets}/orders/curl-request.adoc[]
+
+One showing the HTTP request itself:
+
+include::{snippets}/orders/http-request.adoc[]
+
+And one showing the HTTP response:
+
+include::{snippets}/orders/http-response.adoc[]
+
+Response body:
+include::{snippets}/orders/response-body.adoc[]
+
+Response fields:
+include::{snippets}/orders/response-fields.adoc[]
