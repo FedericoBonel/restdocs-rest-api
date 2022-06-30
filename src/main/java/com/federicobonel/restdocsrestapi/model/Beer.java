@@ -52,8 +52,8 @@ public class Beer {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "min_hand")
-    private Integer minOnHand;
+    @Column(name = "quantity_hand")
+    private Integer quantityOnHand;
 
     @Column(name = "quantity_to_brew")
     private Integer quantityToBrew;
