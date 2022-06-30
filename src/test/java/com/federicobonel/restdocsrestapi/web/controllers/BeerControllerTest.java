@@ -19,6 +19,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +42,8 @@ class BeerControllerTest {
     public static final long UPC = 101010L;
     public static final int MIN_ON_HAND = 20;
     public static final BigDecimal PRICE = BigDecimal.valueOf(MIN_ON_HAND);
-    public static final String BEER_SNIPPET_IDENTIFIER = "v1/beer";
+    public static final String BEER_GET_SNIPPET_IDENTIFIER = "v1/beer-get";
+    public static final String BEER_POST_SNIPPET_IDENTIFIER = "v1/beer-post";
     public static final String BEER_URL_ID_PARAM = "/api/v1/beer/{beerId}";
 
     @Autowired
@@ -53,13 +55,14 @@ class BeerControllerTest {
     @MockBean
     BeerService beerService;
 
-    BeerDTO beer;
+    BeerDTO beerToPost;
+    BeerDTO beerToGet;
 
     String beerDTOJson;
 
     @BeforeEach
     void setUp() throws JsonProcessingException {
-        beer = BeerDTO.builder()
+        beerToPost = BeerDTO.builder()
                 .name(NAME)
                 .style(STYLE)
                 .upc(UPC)
@@ -67,17 +70,29 @@ class BeerControllerTest {
                 .quantityOnHand(MIN_ON_HAND)
                 .build();
 
-        beerDTOJson = mapper.writeValueAsString(beer);
+        beerToGet = BeerDTO.builder()
+                .id(UUID.randomUUID())
+                .version(1L)
+                .creationDate(OffsetDateTime.now())
+                .lastModifiedDate(OffsetDateTime.now())
+                .name(NAME)
+                .style(STYLE)
+                .upc(UPC)
+                .price(PRICE)
+                .quantityOnHand(MIN_ON_HAND)
+                .build();
+
+        beerDTOJson = mapper.writeValueAsString(beerToPost);
     }
 
     @Test
     void getById() throws Exception {
-        given(beerService.findById(any())).willReturn(beer);
+        given(beerService.findById(any())).willReturn(beerToGet);
 
         mockMvc.perform(get(BEER_URL_ID_PARAM, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document(BEER_SNIPPET_IDENTIFIER,
+                .andDo(document(BEER_GET_SNIPPET_IDENTIFIER,
                         pathParameters(
                                 parameterWithName("beerId").description("UUID of the desired beer to get.")
                         ),
@@ -99,14 +114,14 @@ class BeerControllerTest {
 
         ConstrainedFields fields = new ConstrainedFields(BeerDTO.class);
 
-        given(beerService.createBeer(any())).willReturn(beer);
+        given(beerService.createBeer(any())).willReturn(beerToGet);
 
         mockMvc.perform(post(BeerController.BEERS_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(beerDTOJson))
                 .andExpect(status().isCreated())
-                .andDo(document(BEER_SNIPPET_IDENTIFIER,
+                .andDo(document(BEER_POST_SNIPPET_IDENTIFIER,
                         requestFields(
                                 fields.withPath("id").ignored(),
                                 fields.withPath("version").ignored(),
@@ -117,12 +132,23 @@ class BeerControllerTest {
                                 fields.withPath("upc").description("Universal product code of beer"),
                                 fields.withPath("price").description("Beer price"),
                                 fields.withPath("quantityOnHand").description("Quantity of beers on hand")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("Id of the beer."),
+                                fieldWithPath("version").description("Version number."),
+                                fieldWithPath("creationDate").description("Date of beer creation."),
+                                fieldWithPath("lastModifiedDate").description("Date of last beer modification."),
+                                fieldWithPath("name").description("Beer name."),
+                                fieldWithPath("style").description("Beer style (i.g. IPA, Lager)."),
+                                fieldWithPath("upc").description("Universal product code of beer"),
+                                fieldWithPath("price").description("Beer price"),
+                                fieldWithPath("quantityOnHand").description("Quantity of beers on hand")
                         )));
     }
 
     @Test
     void updateBeer() throws Exception {
-        given(beerService.updateBeer(any(), any())).willReturn(beer);
+        given(beerService.updateBeer(any(), any())).willReturn(beerToGet);
 
         mockMvc.perform(put(generateRandomIDUrl())
                         .contentType(MediaType.APPLICATION_JSON)

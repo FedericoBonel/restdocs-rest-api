@@ -1,27 +1,55 @@
 = Spring Framework Brewery Order Service Docs
-Federico Bonel;
+Federico Bonel <bonelfederico@gmail.com>;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 
 Sample application demonstrating how to use Spring REST Docs with JUnit 5.
 
-`BeerOrderControllerTest` calls to a simple service and produces three documentation snippets.
+`BeerControllerTest` calls to a simple service and produces documentation snippets.
 
-One showing how to make an HTTP request to the service using cURL:
+== GET existing beers
 
-include::{snippets}/orders/curl-request.adoc[]
+=== One showing how to make an HTTP request to the service using cURL:
 
-One showing the HTTP request itself:
+include::{snippets}/v1/beer-get/curl-request.adoc[]
 
-include::{snippets}/orders/http-request.adoc[]
+=== One showing the HTTP request itself:
 
-And one showing the HTTP response:
+include::{snippets}/v1/beer-get/http-request.adoc[]
 
-include::{snippets}/orders/http-response.adoc[]
+=== And one showing the HTTP response:
 
-Response body:
-include::{snippets}/orders/response-body.adoc[]
+include::{snippets}/v1/beer-get/http-response.adoc[]
 
-Response fields:
-include::{snippets}/orders/response-fields.adoc[]
+==== Response body:
+include::{snippets}/v1/beer-get/response-body.adoc[]
+
+==== Response fields:
+include::{snippets}/v1/beer-get/response-fields.adoc[]
+
+== POST new beers
+
+=== One showing how to make an HTTP request to the service using cURL:
+
+include::{snippets}/v1/beer-post/curl-request.adoc[]
+
+=== One showing the HTTP request itself:
+
+include::{snippets}/v1/beer-post/http-request.adoc[]
+
+=== And one showing the HTTP response:
+
+include::{snippets}/v1/beer-post/http-response.adoc[]
+
+==== Request body:
+include::{snippets}/v1/beer-post/request-body.adoc[]
+
+==== Request fields:
+include::{snippets}/v1/beer-post/request-fields.adoc[]
+
+==== Response body:
+include::{snippets}/v1/beer-post/response-body.adoc[]
+
+==== Response fields:
+include::{snippets}/v1/beer-post/response-fields.adoc[]
