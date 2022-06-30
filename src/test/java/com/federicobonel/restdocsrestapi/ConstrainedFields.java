@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
+/* Generates constraints descriptions using reflection for a given class*/
 public class ConstrainedFields {
 
     private final ConstraintDescriptions constraintDescriptions;
@@ -18,7 +19,7 @@ public class ConstrainedFields {
     public FieldDescriptor withPath(String path) {
         return fieldWithPath(path)
                 .attributes(key("constraints").value(StringUtils.collectionToDelimitedString(
-                        this.constraintDescriptions.descriptionsForProperty(path), "."
+                        this.constraintDescriptions.descriptionsForProperty(path), ". "
                 )));
     }
 }
