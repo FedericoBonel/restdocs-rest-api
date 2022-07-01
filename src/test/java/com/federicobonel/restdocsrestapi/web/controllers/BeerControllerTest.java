@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "yourdomainhere", uriPort = 8080)
 @WebMvcTest(BeerController.class)
-@ComponentScan(basePackages = "com.federicobonel.restdocsrestapi.web.mappers")
 class BeerControllerTest {
 
     public static final String NAME = "IPA crazy";
@@ -44,6 +43,7 @@ class BeerControllerTest {
     public static final BigDecimal PRICE = BigDecimal.valueOf(MIN_ON_HAND);
     public static final String BEER_GET_SNIPPET_IDENTIFIER = "v1/beer-get";
     public static final String BEER_POST_SNIPPET_IDENTIFIER = "v1/beer-post";
+    public static final String BEER_PUT_SNIPPET_IDENTIFIER = "v1/beer-put";
     public static final String BEER_URL_ID_PARAM = "/api/v1/beer/{beerId}";
 
     @Autowired
@@ -148,13 +148,38 @@ class BeerControllerTest {
 
     @Test
     void updateBeer() throws Exception {
+
+        ConstrainedFields fields = new ConstrainedFields(BeerDTO.class);
         given(beerService.updateBeer(any(), any())).willReturn(beerToGet);
 
         mockMvc.perform(put(generateRandomIDUrl())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(beerDTOJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(document(BEER_PUT_SNIPPET_IDENTIFIER,
+                        requestFields(
+                                fields.withPath("id").ignored(),
+                                fields.withPath("version").ignored(),
+                                fields.withPath("creationDate").ignored(),
+                                fields.withPath("lastModifiedDate").ignored(),
+                                fields.withPath("name").description("Beer name."),
+                                fields.withPath("style").description("Beer style (i.g. IPA, Lager)."),
+                                fields.withPath("upc").description("Universal product code of beer"),
+                                fields.withPath("price").description("Beer price"),
+                                fields.withPath("quantityOnHand").description("Quantity of beers on hand")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("Id of the beer."),
+                                fieldWithPath("version").description("Version number."),
+                                fieldWithPath("creationDate").description("Date of beer creation."),
+                                fieldWithPath("lastModifiedDate").description("Date of last beer modification."),
+                                fieldWithPath("name").description("Beer name."),
+                                fieldWithPath("style").description("Beer style (i.g. IPA, Lager)."),
+                                fieldWithPath("upc").description("Universal product code of beer"),
+                                fieldWithPath("price").description("Beer price"),
+                                fieldWithPath("quantityOnHand").description("Quantity of beers on hand")
+                        )));
     }
 
     String generateRandomIDUrl() {
